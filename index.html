@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GeoLab 3D — Виртуалды география зертханасы</title>
+<style>
+:root{--bg:#061126;--panel:#0d2044;--panel2:#122b59;--line:#294b83;--cyan:#55e5ff;--blue:#5b8cff;--gold:#ffd36b;--text:#eff6ff;--muted:#a6badb;--green:#62e5b8}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -20%,#193d77 0,#08152e 48%,#040a18 100%);color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif;min-height:100vh}
+header{height:70px;display:flex;align-items:center;justify-content:space-between;padding:0 26px;border-bottom:1px solid #294477;background:#07142bed;position:sticky;top:0;z-index:5;backdrop-filter:blur(14px)}
+.brand{display:flex;align-items:center;gap:12px;font-weight:850;letter-spacing:.4px}.logo{width:40px;height:40px;border-radius:13px;background:linear-gradient(135deg,#55e5ff,#477bff);display:grid;place-items:center;color:#06142e;font-size:22px;box-shadow:0 0 25px #39baff55}.brand small{display:block;color:var(--muted);font-size:9px;letter-spacing:2px;margin-top:3px}
+.top{display:flex;align-items:center;gap:14px;color:var(--muted);font-size:11px}.live{color:var(--green);border:1px solid #287d73;padding:7px 10px;border-radius:20px}
+.layout{display:grid;grid-template-columns:235px minmax(0,1fr);gap:18px;max-width:1660px;margin:auto;padding:20px}
+nav{background:linear-gradient(180deg,#0d204b,#091630);border:1px solid var(--line);border-radius:18px;padding:15px;height:fit-content;position:sticky;top:88px}
+.navtitle{font-size:10px;letter-spacing:2px;color:#83a2d8;margin:6px 8px 13px}.navbtn{width:100%;display:flex;align-items:center;gap:11px;background:transparent;color:#bfd0ed;border:1px solid transparent;padding:12px 10px;border-radius:11px;text-align:left;cursor:pointer;margin:3px 0;font-size:12px;transition:.2s}.navbtn:hover,.navbtn.active{background:linear-gradient(90deg,#1a3e80,#142e60);border-color:#386bbb;color:white}.navbtn.active{box-shadow:inset 3px 0 var(--cyan)}.navbtn span{font-size:18px;width:23px;text-align:center}
+.navnote{margin:20px 4px 4px;padding:12px;border-radius:12px;background:#102750;color:#a7c2e9;font-size:10px;line-height:1.55}
+main{min-width:0}.hero{display:flex;justify-content:space-between;align-items:end;margin:2px 2px 15px;gap:12px}.eyebrow{color:var(--cyan);font-size:10px;letter-spacing:2.4px;font-weight:750}.hero h1{font-size:clamp(23px,3vw,34px);margin:6px 0 4px}.hero p{margin:0;color:var(--muted);font-size:12px}.tag{border:1px solid #315b9b;background:#102956;border-radius:20px;padding:8px 13px;font-size:10px;color:#c1dcff;white-space:nowrap}
+.workspace{display:grid;grid-template-columns:minmax(0,1fr) 275px;gap:14px}.stage{background:radial-gradient(ellipse at 50% 42%,#102b4d,#040b18 72%);border:1px solid #254779;border-radius:20px;min-height:510px;position:relative;overflow:hidden;box-shadow:0 18px 50px #0005}
+.stage:before{content:"";position:absolute;inset:0;background-image:radial-gradient(#9bcaff 1px,transparent 1px);background-size:55px 55px;opacity:.13;pointer-events:none}
+.stagehead{position:absolute;top:16px;left:18px;right:18px;display:flex;justify-content:space-between;z-index:2;align-items:center;pointer-events:none}.pill{background:#102b52dd;border:1px solid #28649b;color:#7deaff;border-radius:20px;padding:7px 10px;font-size:10px;pointer-events:auto}.stagebuttons{display:flex;gap:7px;pointer-events:auto}.tinybtn{background:#0c1c3b;border:1px solid #365887;color:#d1e1fa;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:10px}.tinybtn:hover{border-color:var(--cyan)}
+#scene{width:100%;height:510px;display:block;cursor:grab}#scene:active{cursor:grabbing}.stagecaption{position:absolute;bottom:15px;left:18px;color:#a8bfdf;font-size:10px;max-width:72%;line-height:1.5;pointer-events:none}
+.sidepanel{background:linear-gradient(180deg,#10265a,#0a1738);border:1px solid #294d8c;border-radius:18px;padding:17px;min-height:510px}.sidepanel h3{font-size:14px;margin:2px 0 6px}.sub{color:#a1b7dc;font-size:10px;line-height:1.5;margin-bottom:17px}
+.control{margin:17px 0}.control label{display:flex;justify-content:space-between;gap:8px;color:#c4d5ef;font-size:10px;margin-bottom:9px}.control output{color:var(--cyan);font-weight:750;white-space:nowrap}input[type=range]{width:100%;accent-color:#54dfff;cursor:pointer}
+.statgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:19px}.stat{background:#091b40;border:1px solid #294979;border-radius:11px;padding:10px}.stat small{display:block;color:#9bb1d6;font-size:9px}.stat b{display:block;color:#fff;font-size:15px;margin-top:5px}.info{margin-top:13px;background:#0a1c42;border-left:3px solid var(--cyan);padding:11px;border-radius:7px;color:#c1d2ec;font-size:10px;line-height:1.55}
+.bottomgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-top:13px}.mini{background:#0b1940;border:1px solid #254477;border-radius:14px;padding:13px}.mini .ico{font-size:18px}.mini b{display:block;font-size:11px;margin:7px 0 4px}.mini p{font-size:9px;color:#a2b8dc;line-height:1.5;margin:0}
+.quiz{margin-top:14px;background:#0b1940;border:1px solid #294b80;border-radius:16px;padding:15px}.quizhead{display:flex;justify-content:space-between;gap:10px;align-items:center}.quiz h3{margin:0;font-size:13px}.quiz p{font-size:11px;color:#d0def2}.answers{display:flex;flex-wrap:wrap;gap:8px}.answer{border:1px solid #3a619c;background:#102653;color:#e1edff;padding:9px 12px;border-radius:9px;cursor:pointer;font-size:10px}.answer:hover{border-color:var(--cyan)}#feedback{font-size:10px;color:var(--green);margin-top:10px;min-height:15px}
+footer{text-align:center;color:#829bc4;font-size:9px;padding:20px}
+@media(max-width:1050px){.workspace{grid-template-columns:1fr}.sidepanel{min-height:0}.layout{grid-template-columns:190px 1fr}.stage{min-height:430px}#scene{height:430px}}
+@media(max-width:700px){header{padding:0 13px}.top .live{display:none}.layout{display:block;padding:11px}nav{position:static;margin-bottom:13px;display:flex;overflow:auto;gap:4px;padding:8px}.navtitle,.navnote{display:none}.navbtn{white-space:nowrap;width:auto;min-width:max-content;padding:9px}.workspace{display:block}.stage{margin-bottom:12px;min-height:360px}#scene{height:360px}.bottomgrid{grid-template-columns:1fr}.hero{align-items:start;flex-direction:column}.tag{display:none}.sidepanel{min-height:0}}
+</style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+</head>
+<body>
+<header><div class="brand"><div class="logo">🌐</div><div>GeoLab 3D<small>ВИРТУАЛДЫ ГЕОГРАФИЯ ЗЕРТХАНАСЫ</small></div></div><div class="top"><span>7–9 СЫНЫП</span><span class="live">● НАҚТЫ 3D РЕЖИМ</span></div></header>
+<div class="layout">
+<nav><div class="navtitle">ЗЕРТХАНА БӨЛІМДЕРІ</div>
+<button class="navbtn active" data-mode="earth"><span>🌍</span> Жер ғаламшары</button>
+<button class="navbtn" data-mode="layers"><span>🌋</span> Жердің ішкі құрылысы</button>
+<button class="navbtn" data-mode="plates"><span>🧩</span> Литосфералық тақталар</button>
+<button class="navbtn" data-mode="climate"><span>🌦️</span> Климат зертханасы</button>
+<button class="navbtn" data-mode="water"><span>🌊</span> Дүниежүзілік мұхит</button>
+<button class="navbtn" data-mode="solar"><span>🪐</span> Күн жүйесі</button>
+<button class="navbtn" data-mode="kazakhstan"><span>🇰🇿</span> Қазақстан географиясы</button>
+<div class="navnote">ЗЕРТТЕУ РЕЖИМІ<br>Модельді тінтуірмен айналдыр. Параметрлерді өзгертіп, табиғи құбылыстарды бақыла.</div></nav>
+<main>
+<div class="hero"><div><div class="eyebrow">DIGITAL GEOGRAPHY LAB / 02</div><h1 id="title">Жер ғаламшары</h1><p id="desc">Жердің көлемдік моделін айналдырып, құрлықтар мен мұхиттарды зертте.</p></div><div class="tag">✦ INTERACTIVE 3D LAB</div></div>
+<div class="workspace"><section class="stage"><div class="stagehead"><span class="pill" id="stageLabel">● 3D МОДЕЛЬ • ЖЕР</span><div class="stagebuttons"><button class="tinybtn" id="rotateBtn">Ⅱ Тоқтату</button><button class="tinybtn" id="resetBtn">↺ Қалпына келтіру</button></div></div><div id="scene" aria-label="Интерактивті үш өлшемді модель"></div><div class="stagecaption" id="caption">Жер — Күн жүйесіндегі тіршілік белгілі жалғыз ғаламшар. Модельді тышқанмен айналдырып көр.</div></section>
+<aside class="sidepanel"><h3 id="panelTitle">Зерттеу параметрлері</h3><div class="sub" id="panelSub">Модельге әсер ететін шамаларды өзгертіп көр.</div><div id="controls">
+<div class="control"><label>Айналу бұрышы <output id="v1">35°</output></label><input id="r1" type="range" min="0" max="360" value="35"></div>
+<div class="control"><label>Күн сәулесі <output id="v2">50%</output></label><input id="r2" type="range" min="0" max="100" value="50"></div>
+<div class="control"><label>Масштаб <output id="v3">100%</output></label><input id="r3" type="range" min="70" max="130" value="100"></div></div>
+<div class="statgrid" id="stats"></div><div class="info" id="info"></div></aside></div>
+<div class="bottomgrid"><div class="mini"><div class="ico">🧭</div><b>Зертте және салыстыр</b><p>Географиялық нысандардың орналасуы мен ерекшеліктерін салыстыр.</p></div><div class="mini"><div class="ico">📊</div><b>Деректерді бақыла</b><p>Параметрлерді өзгертіп, модельдегі өзгерістерді байқа.</p></div><div class="mini"><div class="ico">🎯</div><b>Біліміңді тексер</b><p>Әр бөлімдегі қысқа сұраққа жауап беріп, біліміңді бекіт.</p></div></div>
+<section class="quiz"><div class="quizhead"><h3>⚡ Білімді тексеру</h3><span class="pill">ЖЕДЕЛ ТЕСТ</span></div><p id="question"></p><div class="answers" id="answers"></div><div id="feedback"></div></section>
+</main></div><footer>GeoLab 3D • Географияны тәжірибе арқылы үйрен • Оқу мақсатында жасалған интерактивті 3D модель</footer>
+<script type="module">
+import * as THREE from 'three';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+
+const $=id=>document.getElementById(id);
+const sceneHost=$('scene');
+const scene=new THREE.Scene();
+scene.background=new THREE.Color(0x050d20);
+const camera=new THREE.PerspectiveCamera(42,1,.1,1000);camera.position.set(0,1.4,7.8);
+const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.outputColorSpace=THREE.SRGBColorSpace;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.25;
+sceneHost.appendChild(renderer.domElement);
+const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.dampingFactor=.06;controls.minDistance=3;controls.maxDistance=14;
+scene.add(new THREE.AmbientLight(0x8ba9df,1.25));
+const keyLight=new THREE.DirectionalLight(0xffffff,3.2);keyLight.position.set(5,3,6);scene.add(keyLight);
+const rim=new THREE.PointLight(0x258dff,20,30);rim.position.set(-5,1,-4);scene.add(rim);
+const starGeo=new THREE.BufferGeometry(),starPos=[];for(let i=0;i<900;i++){starPos.push((Math.random()-.5)*45,(Math.random()-.5)*30,(Math.random()-.5)*35)}
+starGeo.setAttribute('position',new THREE.Float32BufferAttribute(starPos,3));const stars=new THREE.Points(starGeo,new THREE.PointsMaterial({color:0xa9cfff,size:.025,transparent:true,opacity:.8}));scene.add(stars);
+let activeGroup=new THREE.Group();scene.add(activeGroup);let mode='earth',autoRotate=true,lightPower=50,zoom=100,angle=35,objects=[];
+const mat=(color,roughness=.75,metalness=.05)=>new THREE.MeshStandardMaterial({color,roughness,metalness});
+function clearModel(){while(activeGroup.children.length){const o=activeGroup.children.pop();o.traverse?.(n=>{n.geometry?.dispose();if(n.material){if(Array.isArray(n.material))n.material.forEach(m=>m.dispose());else n.material.dispose()}})}objects=[]}
+function sphere(radius,color,segments=64,material=null){const m=new THREE.Mesh(new THREE.SphereGeometry(radius,segments,segments),material||mat(color));activeGroup.add(m);objects.push(m);return m}
+function line(points,color=0x8edcff,opacity=.55){const g=new THREE.BufferGeometry().setFromPoints(points.map(p=>new THREE.Vector3(...p)));const l=new THREE.Line(g,new THREE.LineBasicMaterial({color,transparent:true,opacity}));activeGroup.add(l);return l}
+function ring(radius,color=0x8abaff){const r=new THREE.Mesh(new THREE.TorusGeometry(radius,.012,8,120),new THREE.MeshBasicMaterial({color,transparent:true,opacity:.45}));r.rotation.x=Math.PI/2;activeGroup.add(r);return r}
+function labelSprite(text,color='#eaf5ff'){const c=document.createElement('canvas'),x=c.getContext('2d');c.width=512;c.height=96;x.font='bold 34px Arial';x.fillStyle=color;x.textAlign='center';x.fillText(text,256,58);const t=new THREE.CanvasTexture(c);const s=new THREE.Sprite(new THREE.SpriteMaterial({map:t,transparent:true,depthTest:false}));s.scale.set(2.4,.45,1);return s}
+function makeEarth(){const group=new THREE.Group();activeGroup.add(group);
+const ocean=new THREE.Mesh(new THREE.SphereGeometry(1.65,96,96),new THREE.MeshPhysicalMaterial({color:0x1264b4,roughness:.38,metalness:.08,clearcoat:.7,clearcoatRoughness:.2}));group.add(ocean);
+// Stylized raised continent patches positioned on globe surface
+const patches=[[-.48,.45,.42,.25],[-.22,.05,.27,.48],[.35,.38,.38,.23],[.52,-.05,.25,.42],[-.58,-.35,.24,.22],[.05,-.48,.22,.4],[.68,-.45,.2,.18]];
+patches.forEach(([lon,lat,w,h],i)=>{const geo=new THREE.SphereGeometry(1.666,32,24,lon* Math.PI, w, Math.max(.05,(.5-lat)*Math.PI),h);const mesh=new THREE.Mesh(geo,mat([0x4b9a62,0x9d9b58,0x658b4c,0x8b9b55][i%4]));group.add(mesh)});
+const cloud=new THREE.Mesh(new THREE.SphereGeometry(1.69,64,64),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.08,wireframe:true}));group.add(cloud);
+const atm=new THREE.Mesh(new THREE.SphereGeometry(1.76,64,64),new THREE.MeshBasicMaterial({color:0x3caeff,transparent:true,opacity:.12,side:THREE.BackSide}));group.add(atm);
+const axis=new THREE.Group();axis.rotation.z=.22;const pole=new THREE.Mesh(new THREE.CylinderGeometry(.012,.012,4.2,12),new THREE.MeshBasicMaterial({color:0xa8dfff,transparent:true,opacity:.65}));axis.add(pole);group.add(axis);
+ring(1.9,0x3aaeff);const tag=labelSprite('ЖЕР ҒАЛАМШАРЫ');tag.position.set(0,-2.15,0);activeGroup.add(tag);objects.push(group);}
+function makeLayers(){const radii=[1.68,1.42, .82,.48],colors=[0x9b8c65,0xd66c3e,0xf2a52d,0xffe08a];const cut=new THREE.Group();activeGroup.add(cut);cut.rotation.y=-.5;
+radii.forEach((r,i)=>{const g=new THREE.SphereGeometry(r,72,72);const m=new THREE.Mesh(g,mat(colors[i],.55));const mesh=new THREE.Mesh(g,m);cut.add(mesh);});
+const wedge=new THREE.Mesh(new THREE.CylinderGeometry(0,1.75,3.5,3,1,true),new THREE.MeshBasicMaterial({color:0x071329,side:THREE.DoubleSide}));wedge.rotation.z=Math.PI/2;wedge.position.set(1.4,0,0);cut.add(wedge);
+[['Жер қыртысы',0x9b8c65],['Мантия',0xd66c3e],['Сыртқы ядро',0xf2a52d],['Ішкі ядро',0xffe08a]].forEach(([t,c],i)=>{const s=labelSprite(t);s.position.set(2.1,1.2-i*.62,0);s.scale.set(1.7,.32,1);cut.add(s);const dot=new THREE.Mesh(new THREE.SphereGeometry(.07,12,12),mat(c));dot.position.set(1.25,1.2-i*.62,0);cut.add(dot)});}
+function makePlates(){const base=new THREE.Mesh(new THREE.SphereGeometry(1.7,64,48),mat(0x315c77));activeGroup.add(base);
+for(let i=0;i<7;i++){const a=i*Math.PI*2/7;const p=new THREE.Mesh(new THREE.BoxGeometry(1.55,.12,1.6),mat([0x9a8057,0x7f9b69,0xb08d5d][i%3]));p.position.set(Math.cos(a)*.58,0,Math.sin(a)*.58);p.rotation.y=-a;p.rotation.z=(i%2?-.12:.12);activeGroup.add(p)}
+const seam=new THREE.Mesh(new THREE.TorusGeometry(1.73,.025,8,100),new THREE.MeshBasicMaterial({color:0xffd36b}));seam.rotation.x=Math.PI/2;activeGroup.add(seam);
+const ar1=new THREE.ArrowHelper(new THREE.Vector3(-1,0,0),new THREE.Vector3(-.3,.2,0),1.1,0x55e5ff,.2,.12),ar2=new THREE.ArrowHelper(new THREE.Vector3(1,0,0),new THREE.Vector3(.3,.2,0),1.1,0xffc56a,.2,.12);activeGroup.add(ar1,ar2);}
+function makeClimate(){const earth=new THREE.Mesh(new THREE.SphereGeometry(1.65,64,64),mat(0x1765a8));activeGroup.add(earth);
+const colors=[0x5ed4ff,0x77c8a1,0xf1d26c,0xef9b60,0x78cfff];for(let i=0;i<5;i++){const lat=(i-2)*.48;const r=1.67*Math.cos(lat);const y=1.67*Math.sin(lat);const band=new THREE.Mesh(new THREE.TorusGeometry(r,.095,12,100),new THREE.MeshBasicMaterial({color:colors[i],transparent:true,opacity:.78}));band.position.y=y;band.rotation.x=Math.PI/2;activeGroup.add(band)}
+const sun=new THREE.Mesh(new THREE.SphereGeometry(.38,32,32),new THREE.MeshBasicMaterial({color:0xffc34e}));sun.position.set(-3.2,.2,0);activeGroup.add(sun);line([[-2.7,.2,0],[-1.7,.2,0]],0xffd36b,.9);}
+function makeWater(){const ocean=new THREE.Mesh(new THREE.SphereGeometry(1.65,80,80),new THREE.MeshPhysicalMaterial({color:0x075b9e,roughness:.22,metalness:.15,clearcoat:1}));activeGroup.add(ocean);
+for(let i=0;i<8;i++){const wave=new THREE.Mesh(new THREE.TorusGeometry(.55+i*.13,.012,6,100),new THREE.MeshBasicMaterial({color:0x64dfff,transparent:true,opacity:.45-i*.035}));wave.rotation.x=Math.PI/2;wave.position.y=-.8+i*.22;activeGroup.add(wave)}
+const trench=new THREE.Mesh(new THREE.TorusGeometry(.85,.08,12,80),mat(0x032e62));trench.scale.set(1.5,.35,1);trench.position.y=-.65;activeGroup.add(trench);const tag=labelSprite('МҰХИТ ТҮБІ');tag.position.set(0,-2.1,0);activeGroup.add(tag);}
+function makeSolar(){const sun=new THREE.Mesh(new THREE.SphereGeometry(.52,48,48),new THREE.MeshBasicMaterial({color:0xffb52e}));activeGroup.add(sun);const glow=new THREE.PointLight(0xffb94a,70,25);activeGroup.add(glow);
+const colors=[0xaaa9a4,0xd9b58b,0x2c82d8,0xb95c45,0xd4a875,0xd8c18e,0x7bcbd1,0x526dc1],radii=[.09,.14,.15,.12,.34,.28,.22,.2],dist=[.95,1.35,1.8,2.3,3.05,3.85,4.55,5.2];
+dist.forEach((d,i)=>{const orbit=new THREE.Mesh(new THREE.TorusGeometry(d,.008,6,120),new THREE.MeshBasicMaterial({color:0x7899c9,transparent:true,opacity:.45}));orbit.rotation.x=Math.PI/2;activeGroup.add(orbit);const p=new THREE.Mesh(new THREE.SphereGeometry(radii[i],32,24),mat(colors[i],.5));p.position.set(d,0,0);activeGroup.add(p);if(i===5){const sat=new THREE.Mesh(new THREE.TorusGeometry(.4,.055,8,48),mat(0xcdbb91));sat.position.copy(p.position);sat.rotation.x=1.2;activeGroup.add(sat)}}
+);}
+function makeKazakhstan(){const shape=new THREE.Shape();shape.moveTo(-1.9,.55);shape.lineTo(-1.45,1.05);shape.lineTo(-.65,1.0);shape.lineTo(-.25,.72);shape.lineTo(.4,.86);shape.lineTo(1.55,.55);shape.lineTo(1.9,.1);shape.lineTo(1.55,-.45);shape.lineTo(.95,-.62);shape.lineTo(.35,-1.05);shape.lineTo(-.45,-.88);shape.lineTo(-.95,-.5);shape.lineTo(-1.75,-.35);shape.closePath();
+const geo=new THREE.ExtrudeGeometry(shape,{depth:.18,bevelEnabled:true,bevelSegments:3,steps:1,bevelSize:.06,bevelThickness:.05});const mesh=new THREE.Mesh(geo,new THREE.MeshStandardMaterial({color:0x3c8e83,metalness:.15,roughness:.65}));mesh.rotation.x=-.15;activeGroup.add(mesh);
+const mountain=new THREE.Mesh(new THREE.ConeGeometry(.28,.8,5),mat(0xd9e2e8));mountain.position.set(1.1,-.3,.32);activeGroup.add(mountain);const casp=new THREE.Mesh(new THREE.CircleGeometry(.28,48),mat(0x2487bd));casp.position.set(-1.65,.05,.25);activeGroup.add(casp);
+[['АСТАНА',.15,.25],['КАСПИЙ',-1.7,.25],['АЛТАЙ',1.15,.9],['САРЫАРҚА',.1,-.7]].forEach(([t,x,y])=>{const s=labelSprite(t);s.position.set(x,y,.35);s.scale.set(1,.2,1);activeGroup.add(s)});}
+const data={
+earth:{title:'Жер ғаламшары',desc:'Жердің көлемдік моделін айналдырып, құрлықтар мен мұхиттарды зертте.',label:'3D МОДЕЛЬ • ЖЕР',caption:'Жер — Күн жүйесіндегі тіршілік белгілі жалғыз ғаламшар. Көк түс мұхиттарды, жасыл-қоңыр түс құрлықтарды көрсетеді.',info:'Жер өз осінен батыстан шығысқа қарай шамамен 24 сағатта бір рет айналады. Бұл күн мен түннің ауысуына себеп болады.',stats:[['Экватор ұзындығы','40 075 км'],['Жер радиусы','6 371 км'],['Мұхит үлесі','71%'],['Құрлық үлесі','29%']],q:'Жер бетінің қанша пайызын дүниежүзілік мұхит алып жатыр?',a:['29%','71%','50%'],correct:1,build:makeEarth},
+layers:{title:'Жердің ішкі құрылысы',desc:'Жер қойнауына саяхат: жер қыртысы, мантия және ядро қабаттарын зертте.',label:'3D ҚИМА • ЖЕР ҚАБАТТАРЫ',caption:'Қима моделі жер қыртысын, мантияны, сыртқы және ішкі ядроны ажыратып көрсетеді.',info:'Жер қыртысы — ең сыртқы қатты қабат. Мантия — ең көлемді қабат. Сыртқы ядро сұйық, ішкі ядро қатты күйде.',stats:[['Жер қыртысы','5–70 км'],['Мантия','≈ 2 900 км'],['Сыртқы ядро','Сұйық'],['Ішкі ядро','Қатты']],q:'Жердің ең қалың қабаты қайсы?',a:['Жер қыртысы','Мантия','Ішкі ядро'],correct:1,build:makeLayers},
+plates:{title:'Литосфералық тақталар',desc:'Тақталардың қозғалысын модельде: ажырау, жақындасу және жанама ығысу.',label:'3D МОДЕЛЬ • ТАҚТАЛАР',caption:'Тақталардың шекараларында жер сілкінісі мен жанартау әрекеті байқалуы мүмкін.',info:'Дивергентті шекара — ажырау; конвергентті — жақындасу; трансформды — жанама ығысу.',stats:[['Қозғалыс','см/жыл'],['Шекара түрі','3 негізгі'],['Нәтиже','Жер бедері'],['Құбылыс','Сейсмикалық']],q:'Екі тақта бір-бірінен алшақтаса, қандай шекара пайда болады?',a:['Конвергентті','Дивергентті','Трансформды'],correct:1,build:makePlates},
+climate:{title:'Климат зертханасы',desc:'Күн радиациясы мен географиялық ендіктің температураға ықпалын зертте.',label:'3D МОДЕЛЬ • КЛИМАТ',caption:'Түрлі түсті белдеулер экватордан полюстерге қарай жылудың таралу ерекшелігін шартты түрде көрсетеді.',info:'Климатқа географиялық ендік, биіктік, мұхит ағыстары, құрлық пен мұхиттың таралуы және ауа массалары ықпал етеді.',stats:[['Экватор','Жылы'],['Полюстер','Суық'],['Негізгі фактор','Күн сәулесі'],['Белдеу','Ендікке тәуелді']],q:'Экватор маңында күн радиациясы неге молырақ?',a:['Сәуле тікке жуық түседі','Күн жақынырақ','Ауа қысымы жоғары'],correct:0,build:makeClimate},
+water:{title:'Дүниежүзілік мұхит',desc:'Мұхит суының қасиеттері мен мұхит түбінің пішінін көлемдік модельден таны.',label:'3D МОДЕЛЬ • МҰХИТ',caption:'Дүниежүзілік мұхит Жер бетінің шамамен 71%-ын алып жатыр. Мұхит климат пен су айналымына қатысады.',info:'Су айналымы: булану → конденсация → жауын-шашын → жерүсті және жерасты ағысы арқылы мұхитқа қайту.',stats:[['Мұхит үлесі','71%'],['Ең үлкені','Тынық'],['Ең тереңі','Мариан'],['Тұздылығы','≈35‰']],q:'Жер шарындағы ең үлкен мұхит?',a:['Атлант','Үнді','Тынық'],correct:2,build:makeWater},
+solar:{title:'Күн жүйесі',desc:'Күнді және сегіз ғаламшарды 3D орбиталық модель арқылы салыстыр.',label:'3D МОДЕЛЬ • КҮН ЖҮЙЕСІ',caption:'Сызбада Күн мен сегіз ғаламшардың орбиталары көрсетілген. Өлшемдер мен арақашықтықтар көрнекілік үшін шартты түрде берілген.',info:'Күн жүйесіндегі ғаламшарлар: Меркурий, Шолпан, Жер, Марс, Юпитер, Сатурн, Уран, Нептун.',stats:[['Ғаламшар саны','8'],['Жұлдыз','Күн'],['Жер орны','3-ші'],['Ең үлкені','Юпитер']],q:'Күннен санағанда Жер нешінші ғаламшар?',a:['Екінші','Үшінші','Төртінші'],correct:1,build:makeSolar},
+kazakhstan:{title:'Қазақстан географиясы',desc:'Қазақстан аумағының көлемдік макетін, жер бедері мен ірі нысандарын қарастыр.',label:'3D МОДЕЛЬ • ҚАЗАҚСТАН',caption:'Қазақстан Еуразияның орталық бөлігінде орналасқан. Ел аумағында жазықтар, үстірттер мен биік таулар кездеседі.',info:'Батысында Каспий маңы ойпаты, орталығында Сарыарқа, шығысы мен оңтүстік-шығысында Алтай, Жетісу Алатауы және Тянь-Шань орналасқан.',stats:[['Аумағы','2,725 млн км²'],['Астанасы','Астана'],['Ірі су айдыны','Каспий'],['Ең биік нүкте','Хан Тәңірі']],q:'Қазақстанның шығысында орналасқан тау жүйесі?',a:['Алтай','Орал','Қаратау'],correct:0,build:makeKazakhstan}
+};
+function setStats(items){$('stats').innerHTML=items.map(x=>`<div class="stat"><small>${x[0]}</small><b>${x[1]}</b></div>`).join('')}
+function setQuestion(d){$('question').textContent=d.q;$('answers').innerHTML=d.a.map((a,i)=>`<button class="answer" data-correct="${i===d.correct}">${a}</button>`).join('');$('feedback').textContent=''}
+function buildMode(m){clearModel();data[m].build();activeGroup.rotation.set(0,0,0);camera.position.set(0,1.2,m==='solar'?9:7.8);controls.target.set(0,0,0);controls.update()}
+function setMode(m){mode=m;document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.mode===m));const d=data[m];$('title').textContent=d.title;$('desc').textContent=d.desc;$('stageLabel').textContent='● '+d.label;$('caption').textContent=d.caption;$('info').textContent=d.info;setStats(d.stats);setQuestion(d);buildMode(m);setupControls()}
+document.querySelectorAll('.navbtn').forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.mode)));
+const labels={earth:['Айналу бұрышы','Күн сәулесі','Масштаб'],layers:['Қима бұрышы','Қабат көрінісі','Масштаб'],plates:['Тақта ығысуы','Қозғалыс бағыты','Жылдамдық'],climate:['Географиялық ендік','Күн радиациясы','Биіктік'],water:['Мұхит тереңдігі','Толқын биіктігі','Тұздылық'],solar:['Орбиталық бұрыш','Күн жарығы','Масштаб'],kazakhstan:['Аймақ бағыты','Жер бедері','Карта масштабы']};
+const units={earth:['°','%','%'],layers:['°','%','%'],plates:[' км','°',' см/жыл'],climate:['°','%',' м'],water:[' м',' м','‰'],solar:['°','%','%'],kazakhstan:[' км',' м','%']};
+function setupControls(){labels[mode].forEach((v,i)=>{document.querySelectorAll('.control label')[i].childNodes[0].textContent=v+' ';});$('panelSub').textContent='Параметрлерді өзгертіп, модельдегі өзгерісті бақыла.';['r1','r2','r3'].forEach((id,i)=>{const val=+$(id).value;$('v'+(i+1)).textContent=val+units[mode][i]})}
+['r1','r2','r3'].forEach((id,i)=>$(id).addEventListener('input',e=>{const val=+e.target.value;$('v'+(i+1)).textContent=val+units[mode][i];if(i===0){angle=val;activeGroup.rotation.y=THREE.MathUtils.degToRad(val)}if(i===1){lightPower=val;keyLight.intensity=.3+val/100*4;rim.intensity=4+val/100*25}if(i===2){zoom=val;camera.position.setLength(8.8*100/val);controls.update()}if(mode==='plates'&&i===0){activeGroup.children.forEach((o,j)=>{if(o.isMesh&&j>0)o.rotation.z=(val-180)/900})}}));
+$('rotateBtn').onclick=()=>{autoRotate=!autoRotate;$('rotateBtn').textContent=autoRotate?'Ⅱ Тоқтату':'⟳ Айналдыру'};
+$('resetBtn').onclick=()=>{['r1','r2','r3'].forEach((id,i)=>$(id).value=[35,50,100][i]);angle=35;lightPower=50;zoom=100;keyLight.intensity=2.3;rim.intensity=16;setupControls();buildMode(mode)};
+$('answers').addEventListener('click',e=>{if(!e.target.matches('.answer'))return;const good=e.target.dataset.correct==='true';$('feedback').textContent=good?'✓ Дұрыс жауап! Жарайсың!':'↻ Қайта ойланып көр. Түсіндірмені оқы.';$('feedback').style.color=good?'#62e5b8':'#ffd36b'});
+function resize(){const w=sceneHost.clientWidth,h=sceneHost.clientHeight;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h)}
+new ResizeObserver(resize).observe(sceneHost);resize();setMode('earth');
+function animate(){requestAnimationFrame(animate);if(autoRotate&&mode!=='kazakhstan'){activeGroup.rotation.y+=mode==='solar'?.0015:.0025}controls.update();renderer.render(scene,camera)}animate();
+</script>
+</body></html>
